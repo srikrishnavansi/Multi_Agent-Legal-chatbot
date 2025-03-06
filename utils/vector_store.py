@@ -30,10 +30,4 @@ class VectorStore:
             raise ValueError("Vector store not initialized. Please add documents first.")
         
         return self.vector_store.similarity_search(query, k=k)
-    @st.cache_data(ttl=3600)  
-    def get_embeddings(text, api_key):
-        embeddings = GoogleGenerativeAIEmbeddings(
-            google_api_key=api_key,
-            model="models/embedding-001"
-        )
-        return embeddings.embed_query(text)
+

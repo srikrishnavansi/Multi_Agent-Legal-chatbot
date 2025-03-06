@@ -1,5 +1,4 @@
-import chromadb
-from langchain.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 class VectorStore:
@@ -21,7 +20,7 @@ class VectorStore:
         if not valid_documents:
             raise ValueError("No valid documents found with content")
         
-        self.vector_store = Chroma.from_documents(
+        self.vector_store = FAISS.from_documents(
             documents=valid_documents,
             embedding=self.embeddings
         )
@@ -31,3 +30,10 @@ class VectorStore:
             raise ValueError("Vector store not initialized. Please add documents first.")
         
         return self.vector_store.similarity_search(query, k=k)
+    @st.cache_data(ttl=3600)  
+    def get_embeddings(text, api_key):
+        embeddings = GoogleGenerativeAIEmbeddings(
+            google_api_key=api_key,
+            model="models/embedding-001"
+        )
+        return embeddings.embed_query(text)
